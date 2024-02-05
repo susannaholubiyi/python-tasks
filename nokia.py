@@ -552,18 +552,4 @@ match browse:
 	
 		back_button()
 			
-	
-				
-	
-
-		
-		
-				
-
-		
-	  	 
-                  
-                  
-
-             
-           
+       
