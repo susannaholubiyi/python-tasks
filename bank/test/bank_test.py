@@ -2,17 +2,21 @@ import unittest
 from AccountNotFoundError import AccountNotFoundError
 from InsufficientFundError import InsufficientFundError
 from InvalidAmountError import InvalidAmountError
+from InvalidPinError import InvalidPinError
 
 from bank import Bank
 
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
-        self.bank = Bank()
+        self.bank = Bank("SBbank")
 
     def test_that_bank_can_register_one_customer(self):
         self.bank.register_customer("first name", "last name", "0000")
         self.assertEquals(1, self.bank.get_number_of_customers())
+
+    def test_that_customer_register_with_invalid_pin_invalid_pin_error_is_raised(self):
+        self.assertRaises(InvalidPinError, lambda: self.bank.register_customer("seyi", "seun","111"))
 
     def test_that_bank_can_register_customer_and_find_account(self):
         account1 = self.bank.register_customer("first name", "last name", "0000")

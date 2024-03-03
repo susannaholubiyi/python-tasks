@@ -50,5 +50,3 @@ class Bank:
         receiver_account.deposit(amount)
 
 
-# def __repr__(self):
-      #  return self.
