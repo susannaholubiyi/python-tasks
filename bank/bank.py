@@ -4,7 +4,13 @@ from account import Account
 
 
 class Bank:
-    def __init__(self,name):
+    """This class represents bank object
+    >>> bank = Bank('first bank')
+    >>> bank.name
+    'first bank'
+    """
+
+    def __init__(self, name):
         self.list_of_accounts = []
         self.name = name
         self.account_number = 1
@@ -50,3 +56,7 @@ class Bank:
         receiver_account.deposit(amount)
 
 
+if __name__ == '__main__':
+    import doctest
+
+    doctest.testmod(verbose=True)

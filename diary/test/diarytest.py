@@ -3,7 +3,7 @@ import unittest
 from diarymodule.diary import Diary
 from diarymodule.exception.DiaryIsLockedError import DiaryIsLockedError
 from diarymodule.exception.IncorrectPasswordError import IncorrectPasswordError
-from diarymodule.exception.invalididerror import InvalidIdError
+from diarymodule.exception.invalididerror import InvalidIdError, InvalidInputError
 
 
 class DiaryTestCase(unittest.TestCase):
@@ -99,3 +99,36 @@ class DiaryTestCase(unittest.TestCase):
         self.diary.create_entry("title", "body")
         self.diary.lock_diary()
         self.assertRaises(DiaryIsLockedError, lambda: self.diary.delete_entry(1))
+
+    def test_that_when_you_unlock_diary_with_an_empty_string_error_is_raised(self):
+        self.assertTrue(self.diary.is_locked())
+        self.assertRaises(InvalidInputError, lambda: self.diary.unlock_diary(""))
+
+    def test_that_when_you_create_entry_with_an_empty_string_error_is_raised(self):
+        self.assertTrue(self.diary.is_locked())
+        self.diary.unlock_diary("1234")
+        self.assertRaises(InvalidInputError, lambda: self.diary.create_entry("", ""))
+
+    def test_that_when_you_delete_entry_with_a_none_value_error_is_raised(self):
+        self.assertTrue(self.diary.is_locked())
+        self.diary.unlock_diary("1234")
+        self.diary.create_entry("title1", "body1")
+        self.assertRaises(InvalidInputError, lambda: self.diary.delete_entry(None))
+
+    def test_that_when_you_find_entry_with_a_none_value_error_is_raised(self):
+        self.assertTrue(self.diary.is_locked())
+        self.diary.unlock_diary("1234")
+        self.diary.create_entry("title1", "body1")
+        self.assertRaises(InvalidInputError, lambda: self.diary.find_entry(None))
+
+    def test_that_when_you_update_entry_with_a_none_value_and_empty_string_error_is_raised(self):
+        self.assertTrue(self.diary.is_locked())
+        self.diary.unlock_diary("1234")
+        self.diary.create_entry("title1", "body1")
+        self.assertRaises(InvalidInputError, lambda: self.diary.update_entry(None, "", ""))
+
+    def test_that_when_you_update_entry_with_empty_string_error_is_raised(self):
+        self.assertTrue(self.diary.is_locked())
+        self.diary.unlock_diary("1234")
+        self.diary.create_entry("title1", "body1")
+        self.assertRaises(InvalidInputError, lambda: self.diary.update_entry(1, "", ""))

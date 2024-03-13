@@ -3,15 +3,12 @@ from diarymodule.exception.DiaryIsLockedError import KeyboardInterruptError, Dia
 from diarymodule.exception.IncorrectPasswordError import IncorrectPasswordError
 from diarymodule.exception.diarydoesnotexisterror import DiaryDoesNotExistError
 from diarymodule.exception.invalididerror import InvalidIdError
+from sevensevendisplay.exceptions import InvalidInputError
 
 
 class MainDiary:
     def __init__(self):
         self.diaries = Diaries()
-
-    # def found_diary(self, user_name):
-    #     diary = self.diaries.find_diary(user_name)
-    #     return diary
 
     def main_menu(self):
         menu = """
@@ -24,8 +21,9 @@ class MainDiary:
                 4-> Find entry by Id
                 5-> Update entry
                 6-> Delete entry
-                7-> Delete diary
-                8-> Exit App
+                7-> Lock diary
+                8-> Delete diary
+                9-> Exit App
                  
                 **********************************************************
                 Select option:
@@ -39,7 +37,7 @@ class MainDiary:
                     self.diaries.add(user_name, password)
                     print("Your diary has been created, unlock with password to add entry")
                     print("Always remember your password")
-                except (IncorrectPasswordError, KeyboardInterruptError) as e:
+                except (KeyboardInterruptError, InvalidInputError) as e:
                     print(e)
                 finally:
                     self.main_menu()
@@ -50,7 +48,7 @@ class MainDiary:
                     password = input("Enter your password: ")
                     diary.unlock_diary(password)
                     print("your diary has been unlocked ")
-                except (DiaryDoesNotExistError, IncorrectPasswordError, KeyboardInterruptError) as e:
+                except (DiaryDoesNotExistError, InvalidInputError, IncorrectPasswordError, KeyboardInterruptError) as e:
                     print(e)
                 finally:
                     self.main_menu()
@@ -64,10 +62,11 @@ class MainDiary:
                     diary.create_entry(title, body)
                     print("Your ID is", diary.get_number_of_entries())
                     print("Your entry has been added")
-                except (DiaryDoesNotExistError, KeyboardInterruptError, DiaryIsLockedError) as e:
+                except (DiaryDoesNotExistError, InvalidInputError, KeyboardInterruptError, DiaryIsLockedError) as e:
                     print(e)
                 finally:
                     self.main_menu()
+
             case "4":
                 user_name = input("Enter your user name to find diary: ")
                 try:
@@ -75,10 +74,11 @@ class MainDiary:
                     i_d = input("Enter your ID: ")
                     entry = diary.find_entry(int(i_d))
                     print(entry)
-                except (DiaryDoesNotExistError,DiaryIsLockedError, InvalidIdError, KeyboardInterruptError) as e:
+                except (DiaryDoesNotExistError, InvalidInputError, DiaryIsLockedError, InvalidIdError, KeyboardInterruptError) as e:
                     print(e)
                 finally:
                     self.main_menu()
+
             case "5":
                 user_name = input("Enter your user name to find diary: ")
                 try:
@@ -88,10 +88,11 @@ class MainDiary:
                     new_body = input("Enter the new body")
                     diary.update_entry(int(i_d), new_title, new_body)
                     print("Entry has been updated")
-                except (DiaryDoesNotExistError, DiaryIsLockedError, InvalidIdError, KeyboardInterruptError) as e:
+                except (DiaryDoesNotExistError, InvalidInputError, DiaryIsLockedError, InvalidIdError, KeyboardInterruptError) as e:
                     print(e)
                 finally:
                     self.main_menu()
+
             case "6":
                 user_name = input("Enter your user name to find diary: ")
                 try:
@@ -99,24 +100,37 @@ class MainDiary:
                     i_d = input("Enter your ID: ")
                     diary.delete_entry(int(i_d))
                     print("Entry has been deleted")
-                except (DiaryDoesNotExistError, DiaryIsLockedError, InvalidIdError, KeyboardInterruptError) as e:
+                except (DiaryDoesNotExistError, InvalidInputError, DiaryIsLockedError, InvalidIdError, KeyboardInterruptError) as e:
                     print(e)
                 finally:
                     self.main_menu()
+
             case "7":
+                user_name = input("Enter your user name to find diary: ")
+                try:
+                    diary = self.diaries.find_diary(user_name)
+                    diary.lock_diary()
+                    print("Diary is locked")
+                except(DiaryDoesNotExistError, InvalidInputError, DiaryIsLockedError, KeyboardInterruptError) as e:
+                    print(e)
+                finally:
+                    self.main_menu()
+
+            case "8":
                 user_name = input("Enter your user name to find diary: ")
                 try:
                     self.diaries.find_diary(user_name)
                     password = input("Enter your password: ")
                     self.diaries.delete_diary(user_name, password)
                     print("Diary has been deleted")
-                except (DiaryDoesNotExistError, DiaryIsLockedError, KeyboardInterruptError) as e:
+                except (DiaryDoesNotExistError, InvalidInputError, DiaryIsLockedError, KeyboardInterruptError) as e:
                     print(e)
                 finally:
                     self.main_menu()
 
-            case "8":
+            case "9":
                 exit(69)
+
             case _:
                 self.main_menu()
 
